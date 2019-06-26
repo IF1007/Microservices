@@ -1,0 +1,3 @@
+[submodule "DCM-front"]
+	path = DCM-front
+	url = https://github.com/lmmc2/DCM-front
