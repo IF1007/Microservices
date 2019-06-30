@@ -11,7 +11,7 @@ import (
 const host = "localhost"
 
 func main() {
-	c, err := dcm.Connect(host, 8426, 100)
+	c, err := dcm.Connect(host, 8426, 1)
 	defer c.Close()
 	topic, err := c.CreateTopic("topic_name", models.TopicProperties{IndexName: "topic_name_index", StartFrom: scylla.Begin})
 	if err != nil {
@@ -19,16 +19,19 @@ func main() {
 		return
 	}
 
-	consume(c, topic)
+	for i := 0; i < 2; i++ {
+		publish(c, topic)
+	}
 }
 
-func consume(c *dcm.Connection, topic *models.Topic) {
-	ch, err := c.Consume(topic.ID, topic.Properties.IndexName)
-	if err != nil {
-		fmt.Println(err)
+func publish(c *dcm.Connection, topic *models.Topic) {
+	message := &models.Message{
+		TopicID: topic.ID,
+		Payload: 1.5,
 	}
 
-	for metric := range ch {
-		fmt.Println(metric)
+	err := c.Publish(topic.ID, message)
+	if err != nil {
+		fmt.Println(err)
 	}
 }
