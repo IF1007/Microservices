@@ -2,6 +2,6 @@
 	path = front
 	url = https://github.com/lmmc2/DCM-front
 [submodule "dcm-middleware"]
-	path = dcm-middleware
+	path = middleware
 	url = https://github.com/esvm/dcm-middleware.git
 	branch = master
