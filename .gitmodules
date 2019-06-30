@@ -1,3 +1,6 @@
 [submodule "DCM-front"]
-	path = DCM-front
+	path = front
 	url = https://github.com/lmmc2/DCM-front
+[submodule "dcm-middleware"]
+	path = middleware
+	url = https://github.com/esvm/dcm-middleware
