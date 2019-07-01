@@ -20,6 +20,7 @@ services:
       - BROKER_PORT=8426
       - BROKER_TOPIC_NAME=iot
       - BROKER_TOPIC_INDEX=Begin
+      - GRPC_ADDRESS="localhost:50051"
   publisher:
     build: ./publisher/
     entrypoint: ["./wait_for_it.sh", "broker:8426", "--", "./dcm-publisher"]

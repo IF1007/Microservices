@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"strconv"
@@ -8,12 +9,21 @@ import (
 	"github.com/esvm/dcm-middleware/dcm"
 	"github.com/esvm/dcm-middleware/distribution/models"
 	"github.com/esvm/dcm-middleware/scylla"
+	"github.com/esvm/microservices/src/database_client"
+	"github.com/esvm/microservices/src/proto"
 )
 
 func main() {
 	host := os.Getenv("BROKER_HOST")
 	string_port := os.Getenv("BROKER_PORT")
 	port, err := strconv.Atoi(string_port)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	grpcAddress := os.Getenv("GRPC_ADDRESS")
+	grpcClient, err := database_client.NewGrpcDatabaseClient(grpcAddress)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -35,11 +45,11 @@ func main() {
 	}
 
 	for {
-		consume(c, topic)
+		consume(c, topic, grpcClient)
 	}
 }
 
-func consume(c *dcm.Connection, topic *models.Topic) {
+func consume(c *dcm.Connection, topic *models.Topic, grpcClient database_client.DatabaseClient) {
 	ch, err := c.Consume(topic.ID, topic.Properties.IndexName)
 	if err != nil {
 		fmt.Println(err)
@@ -47,5 +57,22 @@ func consume(c *dcm.Connection, topic *models.Topic) {
 
 	for metric := range ch {
 		fmt.Println(metric)
+
+		err := grpcClient.InsertItem(context.Background(), &proto.InsertItemRequest{
+			TopicName: "",
+			Metrics: []*proto.Metric{
+				&proto.Metric{
+					Average:           float32(metric.Average),
+					Median:            float32(metric.Median),
+					Variance:          float32(metric.Variance),
+					StandardDeviation: float32(metric.StandardDeviation),
+					Mode:              float32(metric.Mode),
+				},
+			},
+		})
+
+		if err != nil {
+			fmt.Println(err)
+		}
 	}
 }
