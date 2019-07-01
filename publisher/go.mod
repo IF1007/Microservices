@@ -1,6 +1,6 @@
-module github.com/esvm/microservices
+module github.com/esvm/dcm-publisher
 
-go 1.12
+go 1.11
 
 require (
 	github.com/esvm/dcm-middleware v1.0.1
