@@ -26,7 +26,7 @@ services:
       - BROKER_TOPIC_NAME=iot
       - BROKER_TOPIC_INDEX=Begin
   scylla:
-    image: "scylladb/scylla"
+    build: ./scylla/
     ports:
       - "9042:9042"
     environment:
@@ -39,7 +39,7 @@ services:
       timeout: 3s
       retries: 6
   broker:
-    build: ./middleware
+    build: ./middleware/
     entrypoint: ["./wait_for_it.sh", "scylla:9042", "--", "./dcm-middleware"]
     environment:
       SERVER_PORT: 8426
