@@ -1,10 +1,15 @@
 version: "3"
 
 services:
-  api:
+  front_api:
     build: ./front-api/
     ports:
       - 8080:8080
+    environment:
+      - GRPC_HOST=database_api
+      - GRPC_PORT=50051
+      - TOPIC_NAME=iot
+      - PORT=8080
   consumer:
     build: ./consumer/
     entrypoint: ["./wait_for_it.sh", "broker:8426", "--", "./dcm-consumer"]
@@ -25,10 +30,22 @@ services:
       - BROKER_PORT=8426
       - BROKER_TOPIC_NAME=iot
       - BROKER_TOPIC_INDEX=Begin
+  broker:
+    build: ./middleware/
+    entrypoint: ["./wait_for_it.sh", "-t", "0", "scylla:9042", "--", "./dcm-middleware"]
+    environment:
+      - SERVER_PORT=8426
+      - LOG_LEVEL=DEBUG
+      - SCYLLA_HOST=scylla
+    ports: 
+      - 8426:8426
+    links: 
+      - "scylla"
+  # dbs
   scylla:
-    image: "scylladb/scylla"
+    build: ./scylla/
     ports:
-      - "9042:9042"
+      - 9042:9042
     environment:
       - BROADCAST-ADDRESS=127.0.0.1
       - LISTEN-ADDRESS=0.0.0.0
@@ -38,14 +55,11 @@ services:
       interval: 5s
       timeout: 3s
       retries: 6
-  broker:
-    build: ./middleware
-    entrypoint: ["./wait_for_it.sh", "scylla:9042", "--", "./dcm-middleware"]
+  influxdb:
+    image: "influxdb"
+    ports:
+      - 8086:8086
     environment:
-      SERVER_PORT: 8426
-      LOG_LEVEL: "DEBUG"
-      SCYLLA_HOST: "scylla"
-    ports: 
-      - "8426:8426"
-    links: 
-      - "scylla"
+      - INFLUXDB_DB=broker
+      - INFLUXDB_USER=influxdb
+      - INFLUXDB_USER_PASSWORD=gDv%0s%zsiYxP08
