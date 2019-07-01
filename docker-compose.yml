@@ -11,7 +11,7 @@ services:
       - TOPIC_NAME=iot
       - PORT=8080
   consumer:
-    build: ./consumer/
+    build: ./src/consumer/
     entrypoint: ["./wait_for_it.sh", "broker:8426", "--", "./dcm-consumer"]
     links:
       - broker
@@ -22,7 +22,7 @@ services:
       - BROKER_TOPIC_INDEX=Begin
       - GRPC_ADDRESS="localhost:50051"
   publisher:
-    build: ./publisher/
+    build: ./src/publisher/
     entrypoint: ["./wait_for_it.sh", "broker:8426", "--", "./dcm-publisher"]
     links:
       - broker
