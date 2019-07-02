@@ -1,23 +1,21 @@
 version: "3"
 
 services:
-  # front_api:
-  #   build: ./front-api/
-  #   ports:
-  #     - 8080:8080
-  #   environment:
-  #     - GRPC_HOST=104.196.58.169
-  #     - GRPC_PORT=50051
-  #     - TOPIC_NAME=disk_used
-  #     - PORT=8080
-  consumer:
-    build: ./src/consumer/
-    entrypoint: ["./wait_for_it.sh", "broker:8426", "--", "./dcm-consumer"]
-    links:
-      - broker
+  front_api:
+    build: ./front-api/
+    ports:
+      - 8080:8080
     environment:
-      - BROKER_HOST=broker
+      - GRPC_HOST=104.196.58.169
+      - GRPC_PORT=50051
+      - TOPIC_NAME=disk_used
+      - PORT=8080
+  consumer:
+    build: ./
+    entrypoint: ["./consumer"]
+    environment:
+      - BROKER_HOST=ec2-18-231-106-190.sa-east-1.compute.amazonaws.com
       - BROKER_PORT=8426
       - BROKER_TOPIC_NAME=disk_used
       - BROKER_TOPIC_INDEX=disk_used_index
-      - GRPC_ADDRESS="104.196.58.169:50051"
+      - GRPC_ADDRESS=104.196.58.169:50051

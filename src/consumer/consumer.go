@@ -15,8 +15,8 @@ import (
 
 func main() {
 	host := os.Getenv("BROKER_HOST")
-	string_port := os.Getenv("BROKER_PORT")
-	port, err := strconv.Atoi(string_port)
+	stringPort := os.Getenv("BROKER_PORT")
+	port, err := strconv.Atoi(stringPort)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -36,17 +36,15 @@ func main() {
 	}
 	defer c.Close()
 
-	topic_name := os.Getenv("BROKER_TOPIC_NAME")
-	topic_name_index := os.Getenv("BROKER_TOPIC_INDEX")
-	topic, err := c.CreateTopic(topic_name, models.TopicProperties{IndexName: topic_name_index, StartFrom: scylla.Begin})
+	topicName := os.Getenv("BROKER_TOPIC_NAME")
+	topicNameIndex := os.Getenv("BROKER_TOPIC_INDEX")
+	topic, err := c.CreateTopic(topicName, models.TopicProperties{IndexName: topicNameIndex, StartFrom: scylla.Begin})
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 
-	for {
-		consume(c, topic, grpcClient)
-	}
+	consume(c, topic, grpcClient)
 }
 
 func consume(c *dcm.Connection, topic *models.Topic, grpcClient database_client.DatabaseClient) {
@@ -55,11 +53,15 @@ func consume(c *dcm.Connection, topic *models.Topic, grpcClient database_client.
 		fmt.Println(err)
 	}
 
+	fmt.Println("AQUIAQUIAQUIAQUIAQUIAQUIAQUIAQUIAQUI")
+	fmt.Println(topic)
+	fmt.Println("AQUIAQUIAQUIAQUIAQUIAQUIAQUIAQUIAQUI")
+
 	for metric := range ch {
-		fmt.Println(metric)
+		// fmt.Println(metric)
 
 		err := grpcClient.InsertItem(context.Background(), &proto.InsertItemRequest{
-			TopicName: "",
+			TopicName: topic.Name,
 			Metrics: []*proto.Metric{
 				&proto.Metric{
 					Average:           float32(metric.Average),
