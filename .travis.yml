@@ -8,7 +8,7 @@ env:
   global:
     - PATH=$PATH:$HOME/google-cloud-sdk/bin
     - IMAGE_NAME=esvm/microservices
-    - GOOGLE_APPLICATION_CREDENTIALS="${PWD}/dcm-middleware.json"
+    - GOOGLE_APPLICATION_CREDENTIALS="/home/travis/gopath/src/github.com/esvm/microservices/dcm-middleware.json"
 services:
   - docker
 before_install:
