@@ -2,9 +2,6 @@
 	path = middleware
 	url = https://github.com/esvm/dcm-middleware.git
 	branch = master
-[submodule "dcm-front-api"]
-	path = front-api
-	url = git@github.com:PedroRossi/dcm-front-api.git
 [submodule "database-api"]
 	path = database-api
 	url = https://github.com/esvm/dcm-database-api.git
