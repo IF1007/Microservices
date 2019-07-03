@@ -1,0 +1,25 @@
+language: go
+go:
+  - "1.12"
+cache:
+  directories:
+    - $HOME/google-cloud-sdk
+env:
+  global:
+    - PATH=$PATH:$HOME/google-cloud-sdk/bin
+    - IMAGE_NAME=esvm/microservices
+    - GOOGLE_APPLICATION_CREDENTIALS="${PWD}/microservices-consumer.json"
+services:
+  - docker
+before_install:
+  - curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/v1.7.0/bin/linux/amd64/kubectl && chmod +x kubectl && sudo mv kubectl /usr/local/bin/
+  - openssl aes-256-cbc -K $encrypted_e39e709a7d2a_key -iv $encrypted_e39e709a7d2a_iv -in dcm-middleware.json.enc -out dcm-middleware.json -d
+  - curl https://Sid.cloud.google.com | bash
+  - source /home/travis/.bashrc
+  - gcloud auth activate-service-account --key-file "${GOOGLE_APPLICATION_CREDENTIALS}"
+install: true
+before_script:
+  - docker build -t $IMAGE_NAME .
+script:
+  - gcloud container clusters get-credentials dcm-middleware-cluster-1 --zone us-east1-b --project dcm-middlware
+  - kubectl apply -f deployment.yaml

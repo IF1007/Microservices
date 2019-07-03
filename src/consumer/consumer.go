@@ -38,7 +38,7 @@ func main() {
 
 	topicName := os.Getenv("BROKER_TOPIC_NAME")
 	topicNameIndex := os.Getenv("BROKER_TOPIC_INDEX")
-	topic, err := c.CreateTopic(topicName, models.TopicProperties{IndexName: topicNameIndex, StartFrom: scylla.Begin})
+	topic, err := c.CreateTopic(topicName, models.TopicProperties{IndexName: topicNameIndex, StartFrom: scylla.End})
 	if err != nil {
 		fmt.Println(err)
 		return

@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: consumer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: consumer
+  template:
+    metadata:
+      labels:
+        app: consumer
+    spec:
+      containers:
+        - name: api
+          image: esvm/microservices
+          env:
+            - name: BROKER_HOST
+              value: "ec2-18-231-106-190.sa-east-1.compute.amazonaws.com"
+            - name: BROKER_PORT
+              value: "8426"
+            - name: BROKER_TOPIC_NAME
+              value: "disk_used"
+            - name: BROKER_TOPIC_INDEX
+              value: "disk_used_index"
+            - name: GRPC_ADDRESS
+              value: "104.196.58.169:50051"
