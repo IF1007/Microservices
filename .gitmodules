@@ -9,3 +9,6 @@
 	path = database-api
 	url = https://github.com/esvm/dcm-database-api.git
 	branch = master
+[submodule "DCM-front"]
+	path = DCM-front
+	url = https://github.com/esvm/DCM-front.git
