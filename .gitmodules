@@ -9,3 +9,6 @@
 [submodule "DCM-front"]
 	path = DCM-front
 	url = https://github.com/esvm/DCM-front.git
+[submodule "dcm-front-api"]
+	path = dcm-front-api
+	url = https://github.com/esvm/dcm-front-api.git
